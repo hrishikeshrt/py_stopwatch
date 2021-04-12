@@ -188,6 +188,9 @@ class Stopwatch:
         -------
         Total runtime (with or without pause-time)
         '''
+        if not self.__ticks:
+            return 0
+
         if start_name is not None and end_name is not None:
             start_indices = self.__index_name.get(start_name, None)
             end_indices = self.__index_name.get(end_name, None)

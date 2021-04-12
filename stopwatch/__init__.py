@@ -11,7 +11,7 @@ Created on Mon Apr 12 21:22:49 2021
 
 __author__ = """Hrishikesh Terdalkar"""
 __email__ = 'hrishikeshrt@linuxmail.org'
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 ###############################################################################
 
