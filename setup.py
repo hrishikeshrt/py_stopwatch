@@ -37,7 +37,7 @@ setup(
     long_description=readme + '\n\n' + history,
     include_package_data=True,
     keywords='stopwatch',
-    name='stopwatch',
+    name='py-stopwatch',
     packages=find_packages(include=['stopwatch', 'stopwatch.*']),
     setup_requires=setup_requirements,
     test_suite='tests',
