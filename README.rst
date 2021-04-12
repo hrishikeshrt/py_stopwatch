@@ -18,6 +18,7 @@ Stopwatch class for timing your python code, with support for pause, resume and 
 Usage
 -----
 
+
     from stopwatch import Stopwatch
 
     t = Stopwatch()
@@ -47,6 +48,7 @@ Usage
     print(f"Total time: {t.time_total:.2f} seconds.")
     tij = t.time_elapsed(start_name='Named Tick-1', end_name='Named Tick-2')
     print(f"Time between 'Named Tick-1' and 'Named Tick-2': {tij:.4f}")
+
 
 Features
 --------
