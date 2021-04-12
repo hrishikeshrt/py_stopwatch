@@ -1,5 +1,7 @@
 Various usage patterns,
 
+.. code-block:: python
+
     from stopwatch import Stopwatch
     t = Stopwatch()
     t.start()
