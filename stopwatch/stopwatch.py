@@ -36,7 +36,7 @@ ACTIONS = [ACTION_START, ACTION_STOP, ACTION_PAUSE, ACTION_RESUME, ACTION_TICK]
 
 
 class Stopwatch:
-    '''Time various activities'''
+    '''Stopwatch Instance'''
 
     def __init__(self):
         self.__state = STATE_INACTIVE
