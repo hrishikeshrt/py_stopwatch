@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Stopwatch class for timing your python code
-with support for pause, resume and multiple named-ticks.
+Stopwatch class for timing portions of python code
 """
 # Created on Sun Feb 28 20:00:59 2021
 
@@ -43,7 +42,12 @@ class Tick:
 
 
 class Stopwatch:
-    """Stopwatch Instance"""
+    """
+    Stopwatch Instance
+
+    A typical lifecycle of the stopwatch:
+        [creation] --> [start] --> [tick, pause, resume] --> [stop]
+    """
 
     def __init__(self):
         self.__state = STATE_INACTIVE

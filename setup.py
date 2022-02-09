@@ -30,7 +30,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
     ],
-    description="Python Stopwatch class for timing multiple portions of the code",
+    description="Stopwatch class for timing portions of python code",
     entry_points={},
     install_requires=requirements,
     license="MIT license",
