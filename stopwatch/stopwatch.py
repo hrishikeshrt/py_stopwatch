@@ -7,7 +7,6 @@ with support for pause, resume and multiple named-ticks.
 # Created on Sun Feb 28 20:00:59 2021
 
 __author__ = "Hrishikesh Terdalkar"
-__email__ = "hrishikeshrt@linuxmail.org"
 
 ###############################################################################
 
@@ -17,16 +16,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 ###############################################################################
-
-
-@dataclass
-class Tick:
-    time: float
-    action: str
-    name: str
-
-
-###############################################################################
+# Constants
 
 STATE_ACTIVE = "state_active"
 STATE_INACTIVE = "state_inactive"
@@ -39,6 +29,15 @@ ACTION_RESUME = "action_resume"
 ACTION_TICK = "action_tick"
 
 ACTIONS = [ACTION_START, ACTION_STOP, ACTION_PAUSE, ACTION_RESUME, ACTION_TICK]
+
+###############################################################################
+
+
+@dataclass
+class Tick:
+    time: float
+    action: str
+    name: str
 
 ###############################################################################
 
