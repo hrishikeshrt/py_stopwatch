@@ -26,7 +26,7 @@ py-stopwatch
         :alt: Twitter Followers
 
 
-Stopwatch class for timing your python code, with support for pause, resume and multiple named-ticks.
+Stopwatch class for timing portions of python code.
 
 * Free software: MIT license
 * Documentation: https://py-stopwatch.readthedocs.io.
@@ -36,10 +36,10 @@ Features
 ========
 
 * Tick-based stopwatch
-* Pause, Resume, Tick
-* Multiple named-ticks
+* Support for Pause/Resume
+* Support for multiple named-ticks
 * Utility functions for time between different ticks
-
+* No third party requirements.
 
 Usage
 =====
