@@ -10,7 +10,7 @@ with support for pause, resume and multiple named-ticks.
 
 __author__ = "Hrishikesh Terdalkar"
 __email__ = "hrishikeshrt@linuxmail.org"
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 ###############################################################################
 
