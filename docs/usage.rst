@@ -1,5 +1,1 @@
-=====
-Usage
-=====
-
 .. include:: ../USAGE.rst
