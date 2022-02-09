@@ -1,4 +1,5 @@
-Various usage patterns,
+Usage
+=====
 
 .. code-block:: python
 
