@@ -268,7 +268,7 @@ class Stopwatch:
 
         if key is None:
             key = []
-        if not isinstance(key, Iterable):
+        if isinstance(key, str) or not isinstance(key, Iterable):
             key = [key]
 
         search_keys = set()
