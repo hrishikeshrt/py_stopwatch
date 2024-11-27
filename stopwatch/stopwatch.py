@@ -52,11 +52,12 @@ class Stopwatch:
         [creation] --> [start] --> [tick, pause, resume] --> [stop]
     """
 
-    def __init__(self):
+    def __init__(self, precision=None):
         self.__state = STATE_INACTIVE
         self.__ticks = []
         self.__index_name = defaultdict(list)
         self.__index_action = defaultdict(list)
+        self.precision = precision
         self.logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}"
         )
@@ -66,6 +67,8 @@ class Stopwatch:
     def __perform_tick(self, name=None, action=ACTION_TICK):
         """Record a tick without any checks"""
         tick_time = time.perf_counter() - self.__start_time
+        if self.precision:
+            round(tick_time, self.precision)
         if action == ACTION_START:
             tick_time = 0
         tick_id = len(self.__ticks)
