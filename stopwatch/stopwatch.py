@@ -68,7 +68,7 @@ class Stopwatch:
         """Record a tick without any checks"""
         tick_time = time.perf_counter() - self.__start_time
         if self.precision:
-            round(tick_time, self.precision)
+            tick_time = round(tick_time, self.precision)
         if action == ACTION_START:
             tick_time = 0
         tick_id = len(self.__ticks)
