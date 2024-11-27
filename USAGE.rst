@@ -29,5 +29,5 @@ Usage
     print(f"Total pause: {t.time_paused:.2f} seconds.")
     print(f"Total runtime: {t.time_active:.2f} seconds.")
     print(f"Total time: {t.time_total:.2f} seconds.")
-    tij = t.time_elapsed(start_name='Named Tick-1', end_name='Named Tick-2')
+    tij = t.get_time_elapsed(start_key='Named Tick-1', end_key='Named Tick-2')
     print(f"Time between 'Named Tick-1' and 'Named Tick-2': {tij:.4f}")

@@ -40,6 +40,7 @@ Features
 * Utility functions for time between different ticks
 * No third party requirements.
 
+.. include:: ../USAGE.rst
 
 .. toctree::
    :maxdepth: 2
