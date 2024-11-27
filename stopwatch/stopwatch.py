@@ -12,6 +12,7 @@ __author__ = "Hrishikesh Terdalkar"
 import time
 import logging
 from collections import defaultdict
+from collections.abc import Iterable
 from dataclasses import dataclass
 
 ###############################################################################
@@ -34,9 +35,11 @@ ACTIONS = [ACTION_START, ACTION_STOP, ACTION_PAUSE, ACTION_RESUME, ACTION_TICK]
 
 @dataclass
 class Tick:
-    time: float
-    action: str
+    id: int
     name: str
+    time: float
+    duration: float
+    action: str
 
 ###############################################################################
 
@@ -62,13 +65,27 @@ class Stopwatch:
 
     def __perform_tick(self, name=None, action=ACTION_TICK):
         """Record a tick without any checks"""
-        index = len(self.__ticks)
+        tick_time = time.perf_counter() - self.__start_time
+        if action == ACTION_START:
+            tick_time = 0
+        tick_id = len(self.__ticks)
         if action is None or action not in ACTIONS:
             action = ACTION_TICK
-        self.__index_name[name].append(index)
-        self.__index_action[action].append(index)
+        self.__index_name[name].append(tick_id)
+        self.__index_action[action].append(tick_id)
+        if tick_id > 0:
+            last_tick = self.__ticks[-1]
+            duration = tick_time - last_tick.time
+        else:
+            duration = 0
         self.__ticks.append(
-            Tick(time=time.perf_counter(), action=action, name=name)
+            Tick(
+                id=tick_id,
+                name=name,
+                duration=duration,
+                time=tick_time,
+                action=action,
+            )
         )
 
     # ----------------------------------------------------------------------- #
@@ -81,6 +98,7 @@ class Stopwatch:
             self.__ticks = []
             self.__index_name = defaultdict(list)
             self.__index_action = defaultdict(list)
+            self.__start_time = time.perf_counter()
             self.__perform_tick(action=ACTION_START)
             return True
         else:
@@ -153,7 +171,7 @@ class Stopwatch:
     # Calculated Properties
 
     def get_time_paused(self, start_idx=0, end_idx=-1):
-        """Get pause-time"""
+        """Get pause-time between different ticks"""
         pause_time = 0
         pause_start = 0
         pause_end = 0
@@ -176,29 +194,35 @@ class Stopwatch:
 
     @property
     def time_active(self):
-        return self.time_elapsed(exclude_pause=True)
+        return self.get_time_elapsed(exclude_pause=True)
 
     @property
     def time_total(self):
-        return self.time_elapsed(exclude_pause=False)
+        return self.get_time_elapsed(exclude_pause=False)
 
     # ----------------------------------------------------------------------- #
 
-    def time_elapsed(
+    def get_time_elapsed(
         self,
-        start_idx=0,
-        end_idx=-1,
-        start_name=None,
-        end_name=None,
-        exclude_pause=True,
+        start_key: int or str = 0,
+        end_key: int or str = -1,
+        exclude_pause: bool = True,
     ):
         """
         Get time elapsed between different ticks
 
+        If there are multiple matches for start or end ticks, the following
+        two ticks are selected:
+        - the chronologically first matching tick for start
+        - the chronologically last matching tick for end
+
         Parameters
         ----------
 
-        exclude_pause: boolean
+        start_key: int or str
+
+
+        exclude_pause: bool
             If True, pause-time is not counted.
             The default is True.
 
@@ -209,37 +233,82 @@ class Stopwatch:
         if not self.__ticks:
             return 0
 
-        if start_name is not None and end_name is not None:
-            start_indices = self.__index_name.get(start_name, None)
-            end_indices = self.__index_name.get(end_name, None)
-            if start_indices is None:
-                self.logger.warning(f"start_name='{start_name}' not found.")
-                return None
-            elif end_indices is None:
-                self.logger.warning(f"end_name='{end_name}' not found.")
-                return None
-            else:
-                start_idx = start_indices[0]
-                end_idx = end_indices[0]
+        start_matches = self.get_ticks(start_key)
+        end_matches = self.get_ticks(end_key)
+        if not start_matches:
+            self.logger.warning(f"No matching start tick found for '{start_key}'.")
+            return None
+        elif not end_matches:
+            self.logger.warning(f"No matching end tick found for '{end_key}'.")
+            return None
+        else:
+            start_tick = start_matches[0]
+            start_idx = start_tick.id
+            end_tick = end_matches[-1]
+            end_idx = end_tick.id
 
         pause_time = (
             self.get_time_paused(start_idx, end_idx) if exclude_pause else 0
         )
 
-        try:
-            start_tick = self.__ticks[start_idx]
-            end_tick = self.__ticks[end_idx]
-        except IndexError:
-            self.logger.warning("IndexError")
-            return None
         return end_tick.time - start_tick.time - pause_time
+
+    time_elapsed = property(get_time_elapsed)
+
+    # ----------------------------------------------------------------------- #
+
+    def get_ticks(self, key=None):
+        id_match_ticks = []
+        name_match_ticks = []
+        ticks = []
+        total_ticks = len(self.__ticks)
+
+        if key is None:
+            key = []
+        if not isinstance(key, Iterable):
+            key = [key]
+
+        search_keys = set()
+        for k in key:
+            try:
+                int_k = int(k)
+                int_conversion = True
+                search_keys.add(int_k)
+                if int_k < 0:
+                    search_keys.add(total_ticks + int_k)
+            except Exception:
+                int_conversion = False
+            try:
+                str_k = str(k)
+                str_conversion = True
+                search_keys.add(str_k)
+            except Exception:
+                str_conversion = False
+
+            if not int_conversion and not str_conversion:
+                self.logger.warning(
+                    f"Ignored search key {k} ({type(k)}) ."
+                )
+
+        for tick_idx, tick in enumerate(self.__ticks):
+            if tick_idx in search_keys:
+                id_match_ticks.append(tick)
+            if tick.name in search_keys:
+                name_match_ticks.append(tick)
+            ticks.append(tick)
+
+        if search_keys:
+            ticks = id_match_ticks + name_match_ticks
+
+        return ticks
 
     # ----------------------------------------------------------------------- #
 
     def last(self):
-        """Return the time between the last two ticks"""
-        if len(self.__ticks) > 1:
-            return self.__ticks[-1].time - self.__ticks[-2].time
+        """Return the time duration of the last tick
+        i.e. time between the last two ticks"""
+        if len(self.__ticks):
+            return self.__ticks[-1].duration
         else:
             return 0
 
@@ -306,7 +375,7 @@ def main():
     print(f"Total pause: {t.time_paused:.2f} seconds.")
     print(f"Total runtime: {t.time_active:.2f} seconds.")
     print(f"Total time: {t.time_total:.2f} seconds.")
-    tij = t.time_elapsed(start_name="Named Tick-1", end_name="Named Tick-2")
+    tij = t.get_time_elapsed(start_key="Named Tick-1", end_key="Named Tick-2")
     print(f"Time between 'Named Tick-1' and 'Named Tick-2': {tij:.4f}")
     return t
 
