@@ -319,7 +319,7 @@ class Stopwatch:
         """Return the time elapsed since the last tick"""
         if self.__state != STATE_INACTIVE:
             if self.__ticks:
-                return time.perf_counter() - self.__ticks[-1].time
+                return time.perf_counter() - self.__start_time - self.__ticks[-1].time
             else:
                 return 0
         else:
