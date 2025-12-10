@@ -239,7 +239,9 @@ class Stopwatch:
         start_matches = self.get_ticks(start_key)
         end_matches = self.get_ticks(end_key)
         if not start_matches:
-            self.logger.warning(f"No matching start tick found for '{start_key}'.")
+            self.logger.warning(
+                f"No matching start tick found for '{start_key}'."
+            )
             return None
         elif not end_matches:
             self.logger.warning(f"No matching end tick found for '{end_key}'.")
@@ -319,7 +321,8 @@ class Stopwatch:
         """Return the time elapsed since the last tick"""
         if self.__state != STATE_INACTIVE:
             if self.__ticks:
-                return time.perf_counter() - self.__start_time - self.__ticks[-1].time
+                current_time = time.perf_counter() - self.__start_time
+                return current_time - self.__ticks[-1].time
             else:
                 return 0
         else:

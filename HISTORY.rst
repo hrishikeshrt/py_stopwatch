@@ -1,6 +1,13 @@
 History
 =======
 
+1.0.1 (2025-12-11)
+------------------
+
+* Improve CI matrix and drop failing Python 3.7 job.
+* Fix Sphinx configuration and RTD build (language and theme deps).
+* Tidy stopwatch implementation for style (flake8) and clarity.
+
 1.0.0 (2025-12-10)
 ------------------
 
